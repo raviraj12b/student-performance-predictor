@@ -254,9 +254,9 @@ Open your browser at **http://127.0.0.1:5000**
 
 ## Author
 
-**Your Name**
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-- LinkedIn: [linkedin.com/in/YOUR_PROFILE](https://linkedin.com/in/YOUR_PROFILE)
+**Rajesh Borkar**
+- GitHub: [@raviraj12b](https://github.com/raviraj12b)
+- LinkedIn: [linkedin.com/in/rajeshborkar01](https://linkedin.com/in/rajeshborkar01/)
 - Email: rajeshborkar04@gmail.com
 
 ---
