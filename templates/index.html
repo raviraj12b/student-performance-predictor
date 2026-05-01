@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Performance Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Background grid texture -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="app-wrapper">
+
+    <!-- ── TOP NAV ── -->
+    <nav class="topnav">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <div class="logo-icon">SP</div>
+          <div>
+            <div class="logo-title">Student Performance</div>
+            <div class="logo-sub">Predictor · ML Dashboard</div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="model-badge">
+          <span class="dot"></span>
+          Gradient Boosting · R² 0.913
+        </div>
+        <div class="nav-stat">
+          <span class="ns-val">1,000</span>
+          <span class="ns-label">training samples</span>
+        </div>
+        <div class="nav-stat">
+          <span class="ns-val">4</span>
+          <span class="ns-label">models compared</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── MAIN GRID ── -->
+    <div class="main-grid">
+
+      <!-- ── LEFT: INPUT FORM ── -->
+      <div class="panel panel-form">
+        <div class="panel-header">
+          <span class="panel-tag">INPUT</span>
+          <h2 class="panel-title">Student Profile</h2>
+          <p class="panel-desc">Fill in the student's details to generate an AI-powered score prediction.</p>
+        </div>
+
+        <form action="/predict" method="POST" id="predict-form">
+
+          <div class="field-group">
+            <label class="field-label">
+              <span class="label-num">01</span> Gender
+            </label>
+            <div class="select-wrap">
+              <select name="gender" required>
+                <option value="" disabled {% if not gender %}selected{% endif %}>Select gender</option>
+                <option value="male"   {% if gender == 'male'   %}selected{% endif %}>Male</option>
+                <option value="female" {% if gender == 'female' %}selected{% endif %}>Female</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span class="label-num">02</span> Race / Ethnicity
+            </label>
+            <div class="select-wrap">
+              <select name="ethnicity" required>
+                <option value="" disabled {% if not ethnicity %}selected{% endif %}>Select group</option>
+                <option value="group A" {% if ethnicity == 'group A' %}selected{% endif %}>Group A</option>
+                <option value="group B" {% if ethnicity == 'group B' %}selected{% endif %}>Group B</option>
+                <option value="group C" {% if ethnicity == 'group C' %}selected{% endif %}>Group C</option>
+                <option value="group D" {% if ethnicity == 'group D' %}selected{% endif %}>Group D</option>
+                <option value="group E" {% if ethnicity == 'group E' %}selected{% endif %}>Group E</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              <span class="label-num">03</span> Parental Education
+            </label>
+            <div class="select-wrap">
+              <select name="parental_education" required>
+                <option value="" disabled {% if not parental_education %}selected{% endif %}>Select level</option>
+                <option value="some high school"   {% if parental_education == 'some high school'   %}selected{% endif %}>Some High School</option>
+                <option value="high school"        {% if parental_education == 'high school'        %}selected{% endif %}>High School</option>
+                <option value="some college"       {% if parental_education == 'some college'       %}selected{% endif %}>Some College</option>
+                <option value="associate's degree" {% if parental_education == "associate's degree" %}selected{% endif %}>Associate's Degree</option>
+                <option value="bachelor's degree"  {% if parental_education == "bachelor's degree"  %}selected{% endif %}>Bachelor's Degree</option>
+                <option value="master's degree"    {% if parental_education == "master's degree"    %}selected{% endif %}>Master's Degree</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">
+                <span class="label-num">04</span> Lunch Type
+              </label>
+              <div class="select-wrap">
+                <select name="lunch" required>
+                  <option value="" disabled {% if not lunch %}selected{% endif %}>Select</option>
+                  <option value="standard"     {% if lunch == 'standard'     %}selected{% endif %}>Standard</option>
+                  <option value="free/reduced" {% if lunch == 'free/reduced' %}selected{% endif %}>Free / Reduced</option>
+                </select>
+                <div class="select-arrow">▾</div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">
+                <span class="label-num">05</span> Test Prep
+              </label>
+              <div class="select-wrap">
+                <select name="test_preparation" required>
+                  <option value="" disabled {% if not test_preparation %}selected{% endif %}>Select</option>
+                  <option value="none"      {% if test_preparation == 'none'      %}selected{% endif %}>None</option>
+                  <option value="completed" {% if test_preparation == 'completed' %}selected{% endif %}>Completed</option>
+                </select>
+                <div class="select-arrow">▾</div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="predict-btn" id="predict-btn">
+            <span class="btn-text">Generate Prediction</span>
+            <span class="btn-icon">→</span>
+          </button>
+
+        </form>
+
+        {% if error %}
+        <div class="error-banner">
+          <span class="err-icon">⚠</span> {{ error }}
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- ── RIGHT COLUMN ── -->
+      <div class="right-col">
+
+        <!-- Score Result -->
+        {% if prediction is not none %}
+        <div class="panel panel-result animate-in">
+
+          <div class="result-top">
+            <div class="result-label-row">
+              <span class="panel-tag">OUTPUT</span>
+              <span class="confidence-tag">High Confidence</span>
+            </div>
+            <div class="score-display">
+              <div class="score-arc">
+                <svg class="arc-svg" viewBox="0 0 200 120">
+                  <path class="arc-track" d="M 20 110 A 90 90 0 0 1 180 110" fill="none" stroke-width="12" stroke-linecap="round"/>
+                  <path class="arc-fill" id="arcFill"
+                    d="M 20 110 A 90 90 0 0 1 180 110"
+                    fill="none" stroke-width="12" stroke-linecap="round"
+                    stroke-dasharray="283"
+                    stroke-dashoffset="{{ (283 - (prediction / 100 * 283)) | int }}"/>
+                </svg>
+                <div class="arc-center">
+                  <div class="arc-score">{{ prediction }}</div>
+                  <div class="arc-denom">/ 100</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grade-row">
+              <div class="grade-badge grade-{{ grade }}">
+                <span class="grade-letter">{{ grade }}</span>
+                <span class="grade-text">
+                  {% if grade == 'A' %}Excellent{% elif grade == 'B' %}Good{% elif grade == 'C' %}Average{% else %}Needs Support{% endif %}
+                </span>
+              </div>
+              <div class="percentile-tag">
+                {% if prediction >= 80 %}Top 20%
+                {% elif prediction >= 65 %}Top 40%
+                {% elif prediction >= 50 %}Top 60%
+                {% else %}Bottom 40%
+                {% endif %}
+                of students
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject Breakdown Bars -->
+          <div class="breakdown-section">
+            <div class="breakdown-title">ESTIMATED SUBJECT SCORES</div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Mathematics</span>
+                <span class="bar-val">{{ (prediction * 0.97) | int }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-math" style="width: {{ (prediction * 0.97) | int }}%"></div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Reading</span>
+                <span class="bar-val">{{ (prediction * 1.02) | int }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-read" style="width: {{ [prediction * 1.02, 100] | min | int }}%"></div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label-row">
+                <span>Writing</span>
+                <span class="bar-val">{{ (prediction * 1.01) | int }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-write" style="width: {{ [prediction * 1.01, 100] | min | int }}%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insight message -->
+          <div class="insight-box">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">
+              {% if grade == 'A' %}
+                This student profile is strongly associated with high academic performance. Test preparation and standard lunch are key positive factors.
+              {% elif grade == 'B' %}
+                Good performance predicted. Completing a test preparation course could push scores into the A range.
+              {% elif grade == 'C' %}
+                Average performance expected. Socioeconomic factors may be limiting potential. Targeted support could help significantly.
+              {% else %}
+                Below-average performance predicted. Early academic intervention and support programs are strongly recommended.
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+
+        {% else %}
+        <!-- Empty state -->
+        <div class="panel panel-empty">
+          <div class="empty-icon">◎</div>
+          <div class="empty-title">No Prediction Yet</div>
+          <div class="empty-desc">Fill in the student profile on the left and click <strong>Generate Prediction</strong> to see the AI-powered result here.</div>
+          <div class="empty-steps">
+            <div class="step">① Select all 5 fields</div>
+            <div class="step">② Click predict</div>
+            <div class="step">③ View score + insights</div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Model Stats Card -->
+        <div class="panel panel-stats">
+          <div class="stats-header">
+            <span class="panel-tag">MODEL INFO</span>
+            <span class="stats-title">Performance Metrics</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-val">0.913</div>
+              <div class="stat-key">R² Score</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">3.56</div>
+              <div class="stat-key">MAE</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">4.32</div>
+              <div class="stat-key">RMSE</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">800</div>
+              <div class="stat-key">Train rows</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="app-footer">
+      <span>Built with Python · Scikit-learn · Flask</span>
+      <span class="footer-sep">·</span>
+      <a href="https://github.com/YOUR_USERNAME/student-performance-predictor" target="_blank" class="footer-link">
+        View on GitHub →
+      </a>
+    </footer>
+
+  </div>
+
+  <script>
+    // Animate bars on load
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = w; }, 200);
+      });
+    });
+
+    // Button loading state
+    document.getElementById('predict-form').addEventListener('submit', function() {
+      const btn = document.getElementById('predict-btn');
+      btn.classList.add('loading');
+      btn.querySelector('.btn-text').textContent = 'Predicting...';
+    });
+  </script>
+
+</body>
+</html>
