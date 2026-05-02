@@ -51,9 +51,9 @@ The app walks through the complete ML workflow — data exploration, preprocessi
 
 ## Live Demo
 
-🔗 **[Click here to try the app](https://your-deployment-link.onrender.com)**
+🔗 **[Click here to try the app](https://student-performance-predictor-41op.onrender.com)**
 
-> Replace the link above after deploying to Render or Railway.
+
 
 ---
 
@@ -117,7 +117,7 @@ Four regression models were trained and evaluated on the same 80/20 split:
 - **R² =  0.1622** — explains 80.84% of variance in student scores
 - **MAE =10.4902** — predictions are off by ~3.5 points on average (0–100 scale)
 
-> Update the table above with your actual metric values after running `train.py`
+
 
 ---
 
